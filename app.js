@@ -31,8 +31,20 @@ app.get("/players/", async (request, response) => {
   const listOfPlayersQuery = `
     SELECT * FROM cricket_team
     ORDER BY player_id;`;
+
+  let convertDbObjectToResponseObject = (eachPlayer) => {
+    return {
+      playerID: eachPlayer.player_id,
+      playerName: eachPlayer.player_name,
+      jerseyNumber: eachPlayer.jersey_number,
+      role: eachPlayer.role,
+    };
+  };
   const playersList = await db.all(listOfPlayersQuery);
-  response.send(playersList);
+
+  response.send(
+    playersList.map((eachPlayer) => convertDbObjectToResponseObject(eachPlayer))
+  );
 });
 
 //API 2
