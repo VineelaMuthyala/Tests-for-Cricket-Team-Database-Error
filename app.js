@@ -24,15 +24,7 @@ const initializeDBAndServer = async () => {
   }
 };
 initializeDBAndServer();
-
-// API 1
-
-app.get("/players/", async (request, response) => {
-  const listOfPlayersQuery = `
-    SELECT * FROM cricket_team
-    ORDER BY player_id;`;
-
-  let convertDbObjectToResponseObject = (eachPlayer) => {
+let convertDbObjectToResponseObject = (eachPlayer) => {
     return {
       playerID: eachPlayer.player_id,
       playerName: eachPlayer.player_name,
@@ -40,6 +32,16 @@ app.get("/players/", async (request, response) => {
       role: eachPlayer.role,
     };
   };
+
+// API 1
+
+app.get("/players/", async (request, response) => {
+  const listOfPlayersQuery = `
+    SELECT 
+    * 
+    FROM cricket_team;`;
+
+  
   const playersList = await db.all(listOfPlayersQuery);
 
   response.send(
@@ -75,7 +77,7 @@ app.get("/players/:playerId/", async (request, response) => {
     WHERE 
         player_id = '${playerId}';`;
   let player = await db.get(getPlayerQuery);
-  response.send(player);
+  response.send(convertDbObjectToResponseObject(player));
 });
 
 //API4
